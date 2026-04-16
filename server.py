@@ -41,6 +41,7 @@ async def make_request(method: str, path: str, json_body=None) -> dict:
 @mcp.tool()
 async def get_roomba_status(api_type: Optional[str] = "local") -> dict:
     """Get the current status and state of the Roomba robot, including battery level, cleaning status, position, mission details, and any error states. Use this to check if the robot is running, docked, stuck, or idle before issuing commands."""
+    _track("get_roomba_status")
     api = api_type if api_type in ("local", "cloud") else "local"
     try:
         result = await make_request("GET", f"/api/{api}/info/state")
@@ -60,6 +61,7 @@ async def get_roomba_status(api_type: Optional[str] = "local") -> dict:
 
 @mcp.tool()
 async def start_cleaning(
+    _track("start_cleaning")
     api_type: Optional[str] = "local",
     rooms: Optional[List[int]] = None
 ) -> dict:
@@ -79,6 +81,7 @@ async def start_cleaning(
 @mcp.tool()
 async def stop_cleaning(api_type: Optional[str] = "local") -> dict:
     """Stop the current cleaning mission and have the Roomba return to its dock/home base. Use this when you want to end a cleaning session and send the robot back to charge."""
+    _track("stop_cleaning")
     api = api_type if api_type in ("local", "cloud") else "local"
     try:
         result = await make_request("GET", f"/api/{api}/action/stop")
@@ -90,6 +93,7 @@ async def stop_cleaning(api_type: Optional[str] = "local") -> dict:
 @mcp.tool()
 async def pause_cleaning(api_type: Optional[str] = "local") -> dict:
     """Pause the current cleaning mission without returning to dock. The robot will stop in place and can be resumed later. Use this for a temporary halt, such as when someone needs to pass through."""
+    _track("pause_cleaning")
     api = api_type if api_type in ("local", "cloud") else "local"
     try:
         result = await make_request("GET", f"/api/{api}/action/pause")
@@ -101,6 +105,7 @@ async def pause_cleaning(api_type: Optional[str] = "local") -> dict:
 @mcp.tool()
 async def resume_cleaning(api_type: Optional[str] = "local") -> dict:
     """Resume a previously paused cleaning mission. The robot will continue from where it left off. Use this after pausing to continue the cleaning cycle."""
+    _track("resume_cleaning")
     api = api_type if api_type in ("local", "cloud") else "local"
     try:
         result = await make_request("GET", f"/api/{api}/action/resume")
@@ -112,6 +117,7 @@ async def resume_cleaning(api_type: Optional[str] = "local") -> dict:
 @mcp.tool()
 async def dock_roomba(api_type: Optional[str] = "local") -> dict:
     """Send the Roomba back to its home base/dock without stopping a mission first. Use this when the robot is idle or wandering and you want it to return home and charge."""
+    _track("dock_roomba")
     api = api_type if api_type in ("local", "cloud") else "local"
     try:
         result = await make_request("GET", f"/api/{api}/action/dock")
@@ -123,6 +129,7 @@ async def dock_roomba(api_type: Optional[str] = "local") -> dict:
 @mcp.tool()
 async def get_cleaning_map(mission_id: Optional[str] = None) -> dict:
     """Retrieve the latest cleaning map or floor plan image generated during the last cleaning mission. Use this to visualize the area the Roomba has cleaned, its path, and any obstacles detected. Returns map image data or a URL to the rendered map."""
+    _track("get_cleaning_map")
     try:
         # First get current mission info to get coordinates for map rendering
         mission_data = await make_request("GET", "/api/local/info/mission")
@@ -148,6 +155,7 @@ async def get_cleaning_map(mission_id: Optional[str] = None) -> dict:
 
 @mcp.tool()
 async def get_roomba_preferences(
+    _track("get_roomba_preferences")
     api_type: Optional[str] = "local",
     preferences: Optional[str] = None
 ) -> dict:
